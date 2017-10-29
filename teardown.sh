@@ -1,2 +1,2 @@
-docker rm -f mongo
-docker network rm restnet
+docker rm -f mongo > /dev/null 2>&1
+docker network rm restnet > /dev/null 2>&1

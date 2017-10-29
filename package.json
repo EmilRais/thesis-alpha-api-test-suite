@@ -8,7 +8,7 @@
     "prebuild": "npm run clean",
     "build": "tsc",
     "pretest": "bash setup.sh",
-    "test": "bash test-alpha-api-manual.sh && bash test-alpha-api-generated.sh",
+    "test": "bash test.sh",
     "posttest": "bash teardown.sh"
   },
   "author": "",
