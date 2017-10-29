@@ -1,0 +1,28 @@
+{
+  "name": "alpha-api-test-suite",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "lint": "tslint 'test/**/*.ts'",
+    "clean": "rm -rf build",
+    "prebuild": "npm run clean",
+    "build": "tsc",
+    "pretest": "bash setup.sh",
+    "test": "bash test-alpha-api-manual.sh && bash test-alpha-api-generated.sh",
+    "posttest": "bash teardown.sh"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/mocha": "^2.2.44",
+    "@types/mongodb": "^2.2.15",
+    "@types/superagent": "^3.5.6",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "mongodb": "^2.2.33",
+    "superagent": "^3.8.0",
+    "tslint": "^5.8.0",
+    "typescript": "^2.5.3"
+  }
+}
