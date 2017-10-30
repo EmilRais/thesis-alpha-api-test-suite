@@ -14,6 +14,7 @@ function wait {
 
 function test-alpha-api-manual {
     echo "Testing alpha-api-manual"
+    docker rm -f alpha-api-manual > /dev/null 2>&1
     docker run --detach --name alpha-api-manual -p 3030:8080 --net=restnet emilrais/alpha-api-manual > /dev/null 2>&1
     wait alpha-api-manual "Deployed"
 
@@ -24,6 +25,7 @@ function test-alpha-api-manual {
 
 function test-alpha-api-generated {
     echo "Testing alpha-api-generated"
+    docker rm -f alpha-api-generated > /dev/null 2>&1
     docker run --detach --name alpha-api-generated -p 3030:3000 --net=restnet emilrais/alpha-api-generated > /dev/null 2>&1
     wait alpha-api-generated "Listening"
 
