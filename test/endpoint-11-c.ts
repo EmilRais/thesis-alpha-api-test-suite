@@ -31,7 +31,7 @@ describe("Endpoint 11C - POST /user/facebook/edit", () => {
         return database.close();
     });
 
-    it("should return unauthorized when token is invalid", () => {
+    it("1. Er den angivne token ugyldig skal endpointet returnere Unauthorized.", () => {
         const credential = { type: "facebook", userId: userId, token: "some-invalid-token" };
         return agent.post("localhost:3030/user/facebook/edit")
             .send(credential)
@@ -42,22 +42,7 @@ describe("Endpoint 11C - POST /user/facebook/edit", () => {
             });
     });
 
-    it("should return internal server error when the database fails", () => {
-        const credential = { type: "facebook", userId: userId, token: userToken };
-
-        return database.executeDbAdminCommand({ configureFailPoint: "throwSockExcep", mode: { times: 2 } })
-            .catch(() => {})
-            .then(() => {
-                return agent.post("localhost:3030/user/facebook/edit")
-                    .send(credential)
-                    .catch(error => error.response)
-                    .then(response => {
-                        response.status.should.equal(500);
-                    });
-            });
-    });
-
-    it("should return not acceptable when no user owns the token", () => {
+    it("2. Findes ingen bruger med det angivne Facebook-brugerid skal endpointet returnere Not Acceptable.", () => {
         const credential = { type: "facebook", userId: userId, token: userToken };
         return agent.post("localhost:3030/user/facebook/edit")
             .send(credential)
@@ -68,7 +53,32 @@ describe("Endpoint 11C - POST /user/facebook/edit", () => {
             });
     });
 
-    it("should update user's credential when user owns the token", () => {
+    it("3. Lykkes det at opdatere brugeren skal endpointet returnere den opdaterede bruger og statussen OK.", () => {
+        const credential = { type: "facebook", userId: userId, token: userToken };
+
+        const user = {
+            _id: "some-id",
+            email: null as string,
+            credential: { type: "facebook", userId: userId }
+        };
+        return database.collection("Users").insert(user)
+            .then(() => {
+                return agent.post("localhost:3030/user/facebook/edit")
+                    .send(credential)
+                    .catch(error => error.response)
+                    .then(response => {
+                        response.status.should.equal(200);
+
+                        response.body.should.deep.equal({
+                            _id: "some-id",
+                            email: null as string,
+                            credential: credential
+                        });
+                    });
+            });
+    });
+
+    it("4. Lykkes det at opdatere brugeren skal brugeren være ændret.", () => {
         const credential = { type: "facebook", userId: userId, token: userToken };
 
         const user = {
@@ -90,47 +100,6 @@ describe("Endpoint 11C - POST /user/facebook/edit", () => {
                                     credential: credential
                                 }]);
                             });
-                    });
-            });
-    });
-
-    it("should return 200 when user owns the token", () => {
-        const credential = { type: "facebook", userId: userId, token: userToken };
-
-        const user = {
-            _id: "some-id",
-            credential: { type: "facebook", userId: userId }
-        };
-        return database.collection("Users").insert(user)
-            .then(() => {
-                return agent.post("localhost:3030/user/facebook/edit")
-                    .send(credential)
-                    .catch(error => error.response)
-                    .then(response => {
-                        response.status.should.equal(200);
-                    });
-            });
-    });
-
-    it("should return the updated user when user owns the token", () => {
-        const credential = { type: "facebook", userId: userId, token: userToken };
-
-        const user = {
-            _id: "some-id",
-            email: null as string,
-            credential: { type: "facebook", userId: userId, token: null as string }
-        };
-        return database.collection("Users").insert(user)
-            .then(() => {
-                return agent.post("localhost:3030/user/facebook/edit")
-                    .send(credential)
-                    .catch(error => error.response)
-                    .then(response => {
-                        response.body.should.deep.equal({
-                            _id: "some-id",
-                            email: null as string,
-                            credential: credential
-                        });
                     });
             });
     });
