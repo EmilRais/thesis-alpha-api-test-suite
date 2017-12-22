@@ -34,5 +34,5 @@ function test-alpha-api-generated {
     docker rm -f alpha-api-generated > /dev/null 2>&1
 }
 
-test-alpha-api-manual
 test-alpha-api-generated
+test-alpha-api-manual
