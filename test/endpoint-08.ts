@@ -20,7 +20,7 @@ describe("Endpoint 8 - POST /user/create/alpha-api", () => {
         return database.close();
     });
 
-    it("should return bad request when the input is invalid", () => {
+    it("1. Er den angivne bruger ugyldig skal endpointet returnere Bad Request.", () => {
         const user = { email: "some-invalid-email", credential: "some-invalid-credential" };
         return agent.post("localhost:3030/user/create/alpha-api")
             .send(user)
@@ -30,24 +30,7 @@ describe("Endpoint 8 - POST /user/create/alpha-api", () => {
             });
     });
 
-    it("should return internal server error when the database fails", () => {
-        const user = {
-            email: "some@email.com",
-            credential: { type: "alpha-api", email: "some@mail.com", password: "some-password" }
-        };
-        return database.executeDbAdminCommand({ configureFailPoint: "throwSockExcep", mode: { times: 2 } })
-            .catch(() => {})
-            .then(() => {
-                return agent.post("localhost:3030/user/create/alpha-api")
-                    .send(user)
-                    .catch(error => error.response)
-                    .then(response => {
-                        response.status.should.equal(500);
-                    });
-            });
-    });
-
-    it("should return created when succesful", () => {
+    it("2. Lykkes det at gemme brugeren skal endpointet returnere den opdaterede bruger og statussen Created.", () => {
         const user = {
             email: "some@email.com",
             credential: { type: "alpha-api", email: "some@mail.com", password: "some-password" }
@@ -57,26 +40,15 @@ describe("Endpoint 8 - POST /user/create/alpha-api", () => {
             .catch(error => error.response)
             .then(response => {
                 response.status.should.equal(201);
-            });
-    });
 
-    it("should return the user when succesful", () => {
-        const user = {
-            email: "some@email.com",
-            credential: { type: "alpha-api", email: "some@mail.com", password: "some-password" }
-        };
-        return agent.post("localhost:3030/user/create/alpha-api")
-            .send(user)
-            .catch(error => error.response)
-            .then(response => {
                 response.body._id.should.be.a.string;
-
                 delete response.body._id;
+
                 response.body.should.deep.equal(user);
             });
     });
 
-    it("should store the user when succesful", () => {
+    it("3. Lykkes det at gemme brugeren forefindes brugeren i databasen.", () => {
         const user = {
             email: "some@email.com",
             credential: { type: "alpha-api", email: "some@mail.com", password: "some-password" }

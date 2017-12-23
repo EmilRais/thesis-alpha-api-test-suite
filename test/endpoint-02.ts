@@ -20,7 +20,7 @@ describe("Endpoint 2 - POST /board/create", () => {
         return database.close();
     });
 
-    it("should return bad request when the input is invalid", () => {
+    it("1. Er den angivne opslagstavle ugyldig skal endpointet returnere Bad Request.", () => {
         const board = { name: "some-name", image: "" };
         return agent.post("localhost:3030/board/create")
             .send(board)
@@ -30,21 +30,7 @@ describe("Endpoint 2 - POST /board/create", () => {
             });
     });
 
-    it("should return internal server error when the database fails", () => {
-        const board = { name: "some-name", image: "some-image" };
-        return database.executeDbAdminCommand({ configureFailPoint: "throwSockExcep", mode: { times: 2 } })
-            .catch(() => {})
-            .then(() => {
-                return agent.post("localhost:3030/board/create")
-                    .send(board)
-                    .catch(error => error.response)
-                    .then(response => {
-                        response.status.should.equal(500);
-                    });
-            });
-    });
-
-    it("should return created when succesful", () => {
+    it("2. Lykkes det at gemme opslagstavlen skal endpointet returnere statussen Created.", () => {
         const board = { name: "some-name", image: "some-image" };
         return agent.post("localhost:3030/board/create")
             .send(board)
@@ -54,7 +40,7 @@ describe("Endpoint 2 - POST /board/create", () => {
             });
     });
 
-    it("should store the board when succesful", () => {
+    it("3. Lykkes det at gemme opslagstavlen forefindes opslagstavlen i databasen.", () => {
         const board = { name: "some-name", image: "some-image" };
         return agent.post("localhost:3030/board/create")
             .send(board)
