@@ -32,7 +32,7 @@ describe("Endpoint 4 - POST /post/update", () => {
 
     it("2. Lykkes det at opdatere opslaget skal endpointet returnere statussen OK.", () => {
         const oldPost = { _id: "some-id", title: "old-title" };
-        const newPost = { _id: "some-id", title: "some-title"};
+        const newPost = { _id: "some-id", title: "new-title" };
         return database.collection("Posts").insert(oldPost)
             .then(() => {
                 return agent.post("localhost:3030/post/update")
@@ -45,15 +45,25 @@ describe("Endpoint 4 - POST /post/update", () => {
     });
 
     it("3. Lykkes det at opdatere opslaget forefindes det opdaterede opslag i databasen.", () => {
-        const oldPost = { _id: "some-id", title: "old-title" };
-        const newPost = { _id: "some-id", title: "some-title"};
+        const oldPost = {
+            _id: "some-id",
+            title: "old-title",
+            description: "some-description"
+        } as any;
+
+        const newPost = {
+            _id: "some-id",
+            title: "new-title",
+            description: "some-description"
+        } as any;
         return database.collection("Posts").insert(oldPost)
             .then(() => {
                 return agent.post("localhost:3030/post/update")
                     .send(newPost)
                     .catch(error => error.response)
                     .then(response => {
-                        return database.collection("Posts").find({}, { title: true }).toArray()
+                        const projection = { title: true, description: true };
+                        return database.collection("Posts").find({}, projection).toArray()
                             .then(posts => posts.should.deep.equal([newPost]));
                     });
             });
