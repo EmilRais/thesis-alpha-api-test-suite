@@ -20,19 +20,7 @@ describe("Endpoint 7 - GET /user/get", () => {
         return database.close();
     });
 
-    it("should return internal server error when the database fails", () => {
-        return database.executeDbAdminCommand({ configureFailPoint: "throwSockExcep", mode: { times: 2 } })
-            .catch(() => {})
-            .then(() => {
-                return agent.get("localhost:3030/user/get")
-                    .catch(error => error.response)
-                    .then(response => {
-                        response.status.should.equal(500);
-                    });
-            });
-    });
-
-    it("should return empty list when database contains no users", () => {
+    it("1. Findes der ingen brugere skal endpointet returnere en tom liste og statussen OK.", () => {
         return agent.get("localhost:3030/user/get")
             .catch(error => error.response)
             .then(response => {
@@ -41,7 +29,7 @@ describe("Endpoint 7 - GET /user/get", () => {
             });
     });
 
-    it("should return a list of the X users when database contains X users", () => {
+    it("2. Findes der brugere skal endpointet returnere dem i en liste og statussen OK.", () => {
         const users = [
             { _id: "id-1" },
             { _id: "id-2" },

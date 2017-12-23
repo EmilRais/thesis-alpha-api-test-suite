@@ -20,19 +20,7 @@ describe("Endpoint 1 - GET /board/get", () => {
         return database.close();
     });
 
-    it("should return internal server error when the database fails", () => {
-        return database.executeDbAdminCommand({ configureFailPoint: "throwSockExcep", mode: { times: 2 } })
-            .catch(() => {})
-            .then(() => {
-                return agent.get("localhost:3030/board/get")
-                    .catch(error => error.response)
-                    .then(response => {
-                        response.status.should.equal(500);
-                    });
-            });
-    });
-
-    it("should return empty list when database contains no boards", () => {
+    it("1. Findes der ingen opslagstavler skal endpointet returnere en tom liste og statussen OK.", () => {
         return agent.get("localhost:3030/board/get")
             .catch(error => error.response)
             .then(response => {
@@ -41,7 +29,7 @@ describe("Endpoint 1 - GET /board/get", () => {
             });
     });
 
-    it("should return a list of the X boards when database contains X boards", () => {
+    it("2. Findes der opslagstavler skal endpointet returnere dem i en liste og statussen OK.", () => {
         const boards = [
             { _id: "id-1" },
             { _id: "id-2" },
