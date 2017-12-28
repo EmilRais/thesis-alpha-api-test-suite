@@ -20,7 +20,7 @@ describe("Endpoint 8 - POST /user/create/alpha-api", () => {
         return database.close();
     });
 
-    it("1. Er den angivne bruger ugyldig skal endpointet returnere Bad Request.", () => {
+    it("1. Er brugeren ugyldig skal endpointet returnere Bad Request.", () => {
         const user = { email: "some-invalid-email", credential: "some-invalid-credential" };
         return agent.post("localhost:3030/user/create/alpha-api")
             .send(user)
@@ -30,7 +30,7 @@ describe("Endpoint 8 - POST /user/create/alpha-api", () => {
             });
     });
 
-    it("2. Lykkes det at gemme brugeren skal endpointet returnere den opdaterede bruger og statussen Created.", () => {
+    it("2. Er brugeren gyldig skal endpointet returnere Created og den gemte bruger.", () => {
         const user = {
             email: "some@email.com",
             credential: { type: "alpha-api", email: "some@mail.com", password: "some-password" }
@@ -48,7 +48,7 @@ describe("Endpoint 8 - POST /user/create/alpha-api", () => {
             });
     });
 
-    it("3. Lykkes det at gemme brugeren forefindes brugeren i databasen.", () => {
+    it("3. Er brugeren gyldig skal den efterfølgende findes i Users.", () => {
         const user = {
             email: "some@email.com",
             credential: { type: "alpha-api", email: "some@mail.com", password: "some-password" }

@@ -20,7 +20,7 @@ describe("Endpoint 2 - POST /board/create", () => {
         return database.close();
     });
 
-    it("1. Er den angivne opslagstavle ugyldig skal endpointet returnere Bad Request.", () => {
+    it("1. Er opslagstavlen ugyldig skal endpointet returnere Bad Request.", () => {
         const board = { name: "some-name", image: "" };
         return agent.post("localhost:3030/board/create")
             .send(board)
@@ -30,7 +30,7 @@ describe("Endpoint 2 - POST /board/create", () => {
             });
     });
 
-    it("2. Lykkes det at gemme opslagstavlen skal endpointet returnere statussen Created.", () => {
+    it("2. Er opslagstavlen gyldig skal endpointet returnere Created.", () => {
         const board = { name: "some-name", image: "some-image" };
         return agent.post("localhost:3030/board/create")
             .send(board)
@@ -40,7 +40,7 @@ describe("Endpoint 2 - POST /board/create", () => {
             });
     });
 
-    it("3. Lykkes det at gemme opslagstavlen forefindes opslagstavlen i databasen.", () => {
+    it("3. Er opslagstavlen gyldig skal den efterfølgende findes i Boards.", () => {
         const board = { name: "some-name", image: "some-image" };
         return agent.post("localhost:3030/board/create")
             .send(board)
