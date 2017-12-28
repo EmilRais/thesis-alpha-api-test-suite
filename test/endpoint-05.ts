@@ -4,7 +4,7 @@ const should = chai.should();
 import { Db, MongoClient } from "mongodb";
 import * as agent from "superagent";
 
-describe("Endpoint 5 - POST /post/delete", () => {
+describe("Endpoint 5 - POST /post/delete/:id", () => {
     let database: Db;
 
     before(() => {
@@ -22,8 +22,7 @@ describe("Endpoint 5 - POST /post/delete", () => {
 
     it("1. Lykkes det ikke at slette opslaget skal endpointet returnere Internal Server Error.", () => {
         const post = { _id: "some-id" };
-        return agent.post("localhost:3030/post/delete").type("json")
-            .send(post._id)
+        return agent.post(`localhost:3030/post/delete/${post._id}`)
             .catch(error => error.response)
             .then(response => {
                 response.status.should.equal(500);
@@ -34,8 +33,7 @@ describe("Endpoint 5 - POST /post/delete", () => {
         const post = { _id: "some-id" };
         return database.collection("Posts").insert(post)
             .then(() => {
-                return agent.post("localhost:3030/post/delete").type("json")
-                    .send(post._id)
+                return agent.post(`localhost:3030/post/delete/${post._id}`)
                     .catch(error => error.response)
                     .then(response => {
                         response.status.should.equal(200);
@@ -47,8 +45,7 @@ describe("Endpoint 5 - POST /post/delete", () => {
         const post = { _id: "some-id" };
         return database.collection("Posts").insert(post)
             .then(() => {
-                return agent.post("localhost:3030/post/delete").type("json")
-                    .send(post._id)
+                return agent.post(`localhost:3030/post/delete/${post._id}`)
                     .catch(error => error.response)
                     .then(response => {
                         return database.collection("Posts").find().toArray()
